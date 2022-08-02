@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Components</title>
+</head>
+
+
+
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700&display=swap');
+
+  :root {
+    --font: 'Nunito', sans-serif;
+    --bg-screen: #41466f;
+    --primary-white: #ffffff;
+    --primary-black: #000000;
+    --primary-dark: #292d4a;
+    --primary-light-blue: #6876fe;
+    --secondary-dark: #454c7a;
+    --secondary-bg-options: #313658;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    padding: 0 1rem;
+    background-color: var(--bg-screen);
+  }
+
+  .content {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    background-color: var(--bg-screen);
+    border-radius: 16px;
+  }
+
+  .content .chat-notification {
+    margin: 0 0 1.5rem 0;
+  }
+
+  .chat-notification {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    background-color: var(--primary-dark);
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .chat-notification .chat-notification__image figure {
+    position: relative;
+    width: 40px;
+  }
+
+  .chat-notification .chat-notification__image figure>img {
+    display: block;
+    width: 100%;
+  }
+
+  .chat-notification .chat-notification__image--like::before {
+    content: "";
+    position: absolute;
+    right: -6px;
+    bottom: -4px;
+    width: 16px;
+    height: 16px;
+    background: transparent url("src/img/like-icon.svg") no-repeat center center / cover border-box border-box;
+  }
+
+  .chat-notification .chat-notification__content {
+    width: 100%;
+    height: auto;
+    padding: 0 0 0 16px;
+  }
+
+  .chat-notification .chat-notification__content .chat-notification__data {
+    font: normal 700 16px/22px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+  }
+
+  .chat-notification .chat-notification__content .chat-notification__data>span {
+    position: relative;
+    font: normal 500 14px/19px var(--font);
+    margin: 0 0 0 20px;
+    opacity: 0.8;
+  }
+
+  .chat-notification .chat-notification__content .chat-notification__data>span::before {
+    content: "\2022";
+    position: absolute;
+    font-size: 14px;
+    left: -16px;
+    opacity: 0.8;
+  }
+
+  .chat-notification .chat-notification__content .chat-notification__data>span::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    right: -24px;
+    width: 12px;
+    height: 12px;
+    background: transparent url("src/img/fb-icon.svg") no-repeat center center / cover border-box border-box;
+  }
+
+  .chat-notification .chat-notification__content .chat-notification__text {
+    font: normal 500 14px/19px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+    opacity: 0.8;
+  }
+
+  .chat-notification .chat-notification__image figure>img::selection {
+    background-color: transparent;
+  }
+
+  .chat-notification .chat-notification__content .chat-notification__data::selection,
+  .chat-notification .chat-notification__content .chat-notification__data>span::selection,
+  .chat-notification .chat-notification__content .chat-notification__text::selection {
+    background-color: var(--primary-light-blue);
+    color: var(--primary-white);
+  }
+
+  .chat-notification .chat-notification__button {
+    width: 100%;
+    max-width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-color: var(--secondary-dark);
+    transition: background-color .2s ease-in-out;
+  }
+
+  .chat-notification .chat-notification__button>a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .chat-notification .chat-notification__button:hover {
+    background-color: var(--primary-light-blue);
+  }
+
+  @media (min-width: 1400px) {
+    .chat-notification {
+      max-width: 400px;
+      padding: 24px;
+    }
+  }
+</style>
+
+
+
+
+<style>
+  .chat-message {
+    position: relative;
+    padding: 26px 16px 20px;
+    background-color: var(--primary-dark);
+    border-radius: 20px;
+  }
+
+  .chat-message .chat-message__header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 0 24px 0;
+  }
+
+  .chat-message .chat-message__header .chat-message__image figure {
+    position: relative;
+    width: 40px;
+  }
+
+  .chat-message .chat-message__header .chat-message__image figure>img {
+    display: block;
+    width: 100%;
+  }
+
+  .chat-message .chat-message__header .chat-message__image--chat::before {
+    content: "";
+    position: absolute;
+    right: -6px;
+    bottom: -4px;
+    width: 16px;
+    height: 16px;
+    background: transparent url("src/img/message-icon.svg") no-repeat center center / cover border-box border-box;
+  }
+
+  .chat-message .chat-message__header .chat-message__information {
+    width: 100%;
+    height: auto;
+    padding: 0 0 0 16px;
+  }
+
+  .chat-message .chat-message__header .chat-message__data {
+    font: normal 700 16px/22px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+  }
+
+  .chat-message .chat-message__header .chat-message__data>span {
+    position: relative;
+    font: normal 500 14px/19px var(--font);
+    margin: 0 0 0 20px;
+    opacity: 0.8;
+  }
+
+  .chat-message .chat-message__header .chat-message__data>span::before {
+    content: "\2022";
+    position: absolute;
+    font-size: 14px;
+    left: -16px;
+    opacity: 0.8;
+  }
+
+  .chat-message .chat-message__header .chat-message__data>span::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    right: -24px;
+    width: 12px;
+    height: 12px;
+    background: transparent url("src/img/fb-icon.svg") no-repeat center center / cover border-box border-box;
+  }
+
+  .chat-message .chat-message__header .chat-message__state {
+    font: normal 500 14px/19px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+    opacity: 0.8;
+  }
+
+  .chat-message .chat-message__header .chat-message__image figure>img::selection {
+    background-color: transparent;
+  }
+
+  .chat-message .chat-message__header .chat-message__data::selection,
+  .chat-message .chat-message__header .chat-message__data>span::selection,
+  .chat-message .chat-message__header .chat-message__state::selection {
+    background-color: var(--primary-light-blue);
+    color: var(--primary-white);
+  }
+
+  .chat-message .chat-message__header .chat-message__options {
+    position: relative;
+    width: 100%;
+    max-width: 36px;
+    height: 36px;
+  }
+
+  .chat-message .chat-message__header .chat-message__options button {
+    position: absolute;
+    left: 0;
+    bottom: 16px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    padding: 0 4px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .3s background-color ease-in-out;
+  }
+
+  .chat-message .chat-message__header .chat-message__options button:hover {
+    background-color: var(--secondary-dark);
+  }
+
+  .chat-message .chat-message__header .chat-message__options button>span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--primary-light-blue);
+    border-radius: 50%;
+    transition: .3s background-color ease-in-out;
+  }
+
+  .chat-message .chat-message__header .chat-message__options button:hover>span {
+    background-color: var(--primary-white);
+  }
+
+  .chat-message .chat-message__header .chat-message__menu {
+    position: absolute;
+    top: 28px;
+    right: -4px;
+    width: 280px;
+    height: auto;
+    padding: 1rem .8rem;
+    background-color: var(--secondary-bg-options);
+    border-radius: 12px;
+    border: 1px solid #454b72;
+    z-index: 1;
+    visibility: hidden;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu--active {
+    visibility: visible;
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu h3 {
+    font: normal 400 15px/17px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+    margin: 0 0 12px 0;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu>p {
+    font: normal 300 13px/15px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu ul {
+    position: relative;
+    list-style: none;
+    margin: 16px 0 0;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu ul::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -6px;
+    width: 100%;
+    height: 1px;
+    background-color: var(--secondary-dark);
+  }
+
+  .chat-message .chat-message__header .chat-message__menu ul li {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: .1s background-color ease-in-out;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu ul li:hover {
+    background-color: #434a78;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu li>figure {
+    list-style: none;
+    width: 22px;
+    height: 22px;
+    user-select: none;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu li>figure img {
+    width: 100%;
+    height: 100%;
+    opacity: .8;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu li>p {
+    font: normal 300 13px/15px var(--font);
+    color: var(--primary-white);
+    letter-spacing: 0.02rem;
+    margin: 0 0 0 12px;
+  }
+
+  .chat-message .chat-message__header .chat-message__menu h3::selection,
+  .chat-message .chat-message__header .chat-message__menu>p::selection,
+  .chat-message .chat-message__header .chat-message__menu li>p::selection {
+    background-color: var(--primary-light-blue);
+    color: var(--primary-white);
+  }
+
+  .chat-message .chat-message__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-gap: 16px;
+    overflow-y: scroll;
+    width: 100%;
+    height: 300px;
+    padding: 0 16px 72px;
+    /* Scrollbar styles for Firefox */
+    scrollbar-color: var(--primary-light-blue) var(--secondary-dark);
+    scrollbar-width: thin;
+  }
+
+  /* width */
+  .chat-message .chat-message__body::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  /* Track */
+  .chat-message .chat-message__body::-webkit-scrollbar-track {
+    background: var(--secondary-dark);
+  }
+
+  /* Handle */
+  .chat-message .chat-message__body::-webkit-scrollbar-thumb {
+    background: var(--primary-light-blue);
+  }
+
+  .chat-message .chat-message__body .chat-message__text {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 216px;
+    height: auto;
+    padding: 1rem;
+    background-color: var(--secondary-dark);
+    border-radius: 22px;
+  }
+
+  .chat-message .chat-message__body .chat-message__text:nth-child(even) {
+    justify-self: flex-end;
+  }
+
+  .chat-message .chat-message__body .chat-message__text::before {
+    content: "";
+    position: absolute;
+    top: calc(50% - 4px);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 4px 8px 4px 0;
+    border-color: transparent var(--secondary-dark) transparent transparent;
+  }
+
+  .chat-message .chat-message__body .chat-message__text:nth-child(odd)::before {
+    left: -8px;
+    transform: rotate(0);
+  }
+
+  .chat-message .chat-message__body .chat-message__text:nth-child(even)::before {
+    right: -8px;
+    transform: rotate(180deg);
+  }
+
+  .chat-message .chat-message__body .chat-message__text:last-child::after {
+    content: "Visto \2713 \2713";
+    position: absolute;
+    right: 4px;
+    bottom: -22px;
+    font: normal 400 12px/14px var(--font);
+    color: var(--primary-white);
+    letter-spacing: .3px;
+    opacity: .6;
+  }
+
+  .chat-message .chat-message__body .chat-message__text p,
+  .chat-message .chat-message__body .chat-message__text span {
+    font: normal 300 13px/16px var(--font);
+    color: var(--primary-white);
+    letter-spacing: .3px;
+    opacity: .8;
+  }
+
+  .chat-message .chat-message__body .chat-message__text p::selection,
+  .chat-message .chat-message__body .chat-message__text span::selection {
+    background-color: var(--primary-light-blue);
+    color: var(--primary-white);
+  }
+
+  .chat-message .chat-message__body .chat-message__text span {
+    font-weight: 700;
+    margin: 24px 0 0 0;
+  }
+
+  .chat-message .chat-message__footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    grid-template-rows: 1fr;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 0 16px;
+    background-color: var(--primary-dark);
+    box-shadow: 0px -2px 1px #14162596;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .chat-message .chat-message__footer>input {
+    width: 100%;
+    height: 100%;
+    font: normal 300 14px/14px var(--font);
+    color: rgb(227, 227, 227);
+    padding: 0 16px;
+    caret-color: rgba(000, 000, 000, .6);
+    caret-color: var(--secondary-dark);
+    caret-color: rgba(255, 255, 255, .6);
+    background-color: var(--primary-dark);
+    border: none;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .chat-message .chat-message__footer>input::selection {
+    background-color: var(--primary-light-blue);
+  }
+
+  .chat-message .chat-message__footer>input::placeholder {
+    font: normal 300 13px/14px var(--font);
+    color: var(--primary-white);
+    letter-spacing: .4px;
+    opacity: .4;
+  }
+
+  .chat-message .chat-message__footer>input:focus-visible {
+    outline: none;
+  }
+
+  .chat-message .chat-message__footer>a {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+  }
+
+  .chat-message .chat-message__footer>a svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (min-width: 1400px) {
+    .content .chat-notification {
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .content .chat-message {
+      margin: 0 auto;
+    }
+
+    .chat-message {
+      max-width: 400px;
+      padding: 24px;
+    }
+  }
+</style>
+
+<body>
+
+
+
+
+
+  <main>
+    <div class="content">
+
+      <div class="chat-notification">
+        <div class="chat-notification__image">
+          <figure class="chat-notification__image--like">
+            <img src="src/img/avatar.png" alt="Avatar image.">
+          </figure>
+        </div>
+
+        <div class="chat-notification__content">
+          <p class="chat-notification__data">
+            Brad Delson
+            <span>hace 5m</span>
+          </p>
+
+          <p class="chat-notification__text">
+            Le gusta tu comentario
+          </p>
+        </div>
+
+        <div class="chat-notification__button">
+          <a href="#">
+            <svg width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g opacity="0.8">
+                <path d="M1 16.25L8.67647 9L0.999999 1.75" stroke="white" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </g>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="chat-notification">
+        <div class="chat-notification__image">
+          <figure>
+            <img src="src/img/eye-icon.svg" alt="Icon image.">
+          </figure>
+        </div>
+
+        <div class="chat-notification__content">
+          <p class="chat-notification__data">
+            Aguien ha visto tu anuncio
+          </p>
+
+          <p class="chat-notification__text">
+            hace 5m
+          </p>
+        </div>
+
+        <div class="chat-notification__button">
+          <a href="#">
+            <svg width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g opacity="0.8">
+                <path d="M1 16.25L8.67647 9L0.999999 1.75" stroke="white" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </g>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="chat-message">
+        <div class="chat-message__header">
+
+          <div class="chat-message__image">
+            <figure class="chat-message__image--chat">
+              <img src="src/img/avatar-chat.png" alt="Avatar image.">
+            </figure>
+          </div>
+
+          <div class="chat-message__information">
+            <p class="chat-message__data">
+              Daniel Miller
+              <span>hace 3m</span>
+            </p>
+
+            <p class="chat-message__state">
+              Ha visitado tu anuncio
+            </p>
+          </div>
+
+          <div class="chat-message__options">
+            <button>
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+
+            <div class="chat-message__menu">
+              <h3>
+                Configuración del chat
+              </h3>
+
+              <p>
+                Personaliza la experiencia de tu conversacion.
+              </p>
+
+              <ul>
+                <li>
+                  <figure>
+                    <img src="src/img/call-icon.svg" alt="Call icon.">
+                  </figure>
+
+                  <p>
+                    Sonidos de llamada entrante
+                  </p>
+                </li>
+
+                <li>
+                  <figure>
+                    <img src="src/img/sound-icon.svg" alt="Sound icon.">
+                  </figure>
+
+                  <p>
+                    Sonidos de mensajes
+                  </p>
+                </li>
+
+                <li>
+                  <figure>
+                    <img src="src/img/message-menu-icon.svg" alt="Call icon.">
+                  </figure>
+
+                  <p>
+                    Nuevos mensajes emergentes
+                  </p>
+                </li>
+
+                <li>
+                  <figure>
+                    <img src="src/img/history-icon.svg" alt="Call icon.">
+                  </figure>
+
+                  <p>
+                    Ver historial completo
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-message__body">
+          <div class="chat-message__text">
+            <p>
+              Sii, con la fecha de entrega queda genial!, cuanto sería el total con el envío?
+            </p>
+
+            <span>
+              14:27
+            </span>
+          </div>
+
+          <div class="chat-message__text">
+            <p>
+              Aproximademente en 3 días llega a domicilio! &#128665&#128230
+            </p>
+
+            <span>
+              14:28
+            </span>
+          </div>
+
+          <div class="chat-message__text">
+            <p>
+              Yaa genial, me interesa, realizaré la compra &#128522;
+            </p>
+
+            <span>
+              14:30
+            </span>
+          </div>
+
+          <div class="chat-message__text">
+            <p>
+              Super!, agendado entonces, el número de seguimiento le llegará a su correo
+              dentro de 15 minutos!
+            </p>
+
+            <span>
+              14:32
+            </span>
+          </div>
+
+        </div>
+
+        <div class="chat-message__footer">
+          <input type="text" placeholder="Escribir respuesta ...">
+
+          <a href="#">
+            <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M1.21786 5.44886C0.713009 5.23003 0.732518 4.94967 1.28308 4.81815L20.8519 0.1439C21.3943 0.0146754 21.6703 0.335957 21.4777 0.839087L14.381 19.3771C14.1855 19.891 13.8801 19.8824 13.7007 19.3628L10.8253 10.9923L17.4997 3.54568L9.0072 8.8256L1.21786 5.44886Z"
+                fill="#b2b3be" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+
+
+
+
+  <script>
+    var buttonOptions = document.querySelector(".chat-message .chat-message__header .chat-message__options button");
+    var optionsMenu = document.querySelector(".chat-message .chat-message__header .chat-message__menu");
+
+    buttonOptions.addEventListener("click", () => {
+      optionsMenu.classList.toggle("chat-message__menu--active");
+    });
+  </script>
+</body>
+
+</html>
